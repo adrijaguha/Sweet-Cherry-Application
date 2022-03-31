@@ -9,13 +9,10 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKeyJoinColumn;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-
 
 @Entity
 @Table(name="orders")
@@ -40,7 +37,7 @@ public class Orders {
 	@CollectionTable(name = "orders_cupcake_details",
 			joinColumns = {@JoinColumn(name="orderid")})
 	@MapKeyJoinColumn(name="cupcakeid")
-	@Column(name="count")
+	@Column(name="quantity")
 	private Map<CupcakeDetails,Integer> cupcakeDetails=null;
 	
 	public Orders() {

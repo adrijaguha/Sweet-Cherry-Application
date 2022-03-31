@@ -258,9 +258,10 @@ public class SweetCherryServiceImpl implements SweetCherryService {
 	@Override
 	public void modifyDeliveryAddress(AddressDto address) {
 		if(user_rep.existsById(address.getUserId())) {
+			if(address_rep.existsById(address.getAddressId())) {
 			Optional<UserDetails> user = user_rep.findById(address.getUserId());
-			Optional<Address> address1 = address_rep.findById(address.getAddressId());
 			UserDetails u1 =  user.get();
+			Optional<Address> address1 = address_rep.findById(address.getAddressId());
 			Set<Address> adList = u1.getAddress();
 			adList.remove(address1.get());
 			Address newaddress = new Address();
@@ -273,6 +274,10 @@ public class SweetCherryServiceImpl implements SweetCherryService {
 			newaddress.setUser(u1);
 			adList.add(newaddress);
 			address_rep.save(newaddress);
+			}
+			else {
+				addDeliveryAddress(address);
+			}
 		}
 	}
 
