@@ -1,5 +1,7 @@
 package com.capgemini.sweetcherry.repository;
 
+import javax.transaction.Transactional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -11,6 +13,7 @@ public interface UserDetailsRepository extends JpaRepository<UserDetails, Intege
 
 	@Query("UPDATE UserDetails u set u.password = :newPassword where u.userId =:userId AND u.password =:oldPassword ")
 	@Modifying
+	@Transactional
 	public void updatePassword(@Param("userId") int userId,@Param("oldPassword") String oldPassword,@Param("newPassword") String newPassword);
 
 	@Query("SELECT u FROM UserDetails u where u.email=:userId and u.password=:password")

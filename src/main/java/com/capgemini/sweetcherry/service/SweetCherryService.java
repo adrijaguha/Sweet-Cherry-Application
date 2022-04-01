@@ -6,6 +6,7 @@ import java.util.Optional;
 import com.capgemini.sweetcherry.dto.AddressDto;
 import com.capgemini.sweetcherry.dto.OrdersDto;
 import com.capgemini.sweetcherry.dto.PaymentDto;
+import com.capgemini.sweetcherry.dto.UserDetailsDto;
 import com.capgemini.sweetcherry.exceptions.InvalidIdException;
 import com.capgemini.sweetcherry.exceptions.NoSuchAddressExistsException;
 import com.capgemini.sweetcherry.exceptions.NoSuchCupcakeCategoryExistsException;
@@ -27,21 +28,21 @@ public interface SweetCherryService {
 	
 	// LOGIN MODULE -------------------------------------------------------------------------------
 	
-		//Accessible to Both Administrator and Customer
-		public String login(String userName, String password) throws NoSuchUserExistsException, UserNameAndPasswordDoNotMatchRegularExpressionException ; 
-		public String logout() ;
-			
-			
-		//Administrator services
-		public List<UserDetails> allDetailsOfAdminAndUser() throws NoSuchUserExistsException; 
-			
-
-		//Customer Services
-		public Optional<UserDetails> allUserDetailsById(int userId) throws InvalidIdException;
-		public UserDetails updateCustomerProfile(UserDetails customer) throws UserNameAndPasswordDoNotMatchRegularExpressionException;
-		public UserDetails registerCustomer(UserDetails registerCustomer) throws UserNameAndPasswordDoNotMatchRegularExpressionException;
-		public String modifyPassword(int userId, String oldPassword, String newPassword) throws UserNameAndPasswordDoNotMatchRegularExpressionException;
+	//Accessible to Both Administrator and Customer
+	public String login(String userName, String password) throws NoSuchUserExistsException, UserNameAndPasswordDoNotMatchRegularExpressionException ; 
+	public String logout() ;
 		
+		
+	//Administrator services
+	public List<UserDetails> allDetailsOfAdminAndUser() throws NoSuchUserExistsException; 
+		
+
+	//Customer Services
+	public Optional<UserDetails> allUserDetailsById(int userId) throws InvalidIdException;
+	public String updateCustomerProfile(UserDetailsDto customer) throws UserNameAndPasswordDoNotMatchRegularExpressionException;
+	public UserDetails registerCustomer(UserDetailsDto user) throws UserNameAndPasswordDoNotMatchRegularExpressionException;
+	public String modifyPassword(int userId, String oldPassword, String newPassword) throws UserNameAndPasswordDoNotMatchRegularExpressionException;
+	
 		// CUPCAKE MODULE-------------------------------------------------------------------------------
 		
 		public CupcakeDetails addCupcakeDetails(CupcakeDetails cupcakedetails) throws NoSuchCupcakeExistsException;

@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Service;
 import com.capgemini.sweetcherry.dto.AddressDto;
 import com.capgemini.sweetcherry.dto.OrdersDto;
 import com.capgemini.sweetcherry.dto.PaymentDto;
+import com.capgemini.sweetcherry.dto.UserDetailsDto;
 import com.capgemini.sweetcherry.exceptions.NoSuchAddressExistsException;
 import com.capgemini.sweetcherry.exceptions.NoSuchOrderExistsException;
 import com.capgemini.sweetcherry.exceptions.NoSuchUserExistsException;
@@ -22,12 +25,14 @@ import com.capgemini.sweetcherry.model.CupcakeCategory;
 import com.capgemini.sweetcherry.model.CupcakeDetails;
 import com.capgemini.sweetcherry.model.Orders;
 import com.capgemini.sweetcherry.model.Payment;
+import com.capgemini.sweetcherry.model.Role;
 import com.capgemini.sweetcherry.model.UserDetails;
 import com.capgemini.sweetcherry.repository.AddressRepository;
 import com.capgemini.sweetcherry.repository.CupcakeCategoryRepository;
 import com.capgemini.sweetcherry.repository.CupcakeDetailsRepository;
 import com.capgemini.sweetcherry.repository.OrderRepository;
 import com.capgemini.sweetcherry.repository.PaymentRepository;
+import com.capgemini.sweetcherry.repository.RoleRepository;
 import com.capgemini.sweetcherry.repository.UserDetailsRepository;
 
 @Service
@@ -48,12 +53,50 @@ public class SweetCherryServiceImpl implements SweetCherryService {
 	CupcakeDetailsRepository cupcakedetails_rep;
     @Autowired
     CupcakeCategoryRepository cupcakecategory_rep;
+    @Autowired
+    RoleRepository role_rep; 
+    
+    public boolean checkUserName(String firstName,String lastName) {
+    	Pattern validname=Pattern.compile("/^[a-z ,.'-]+$/i");
+    	Matcher matcher = validname.matcher(firstName);
+    	Matcher matcher2 = validname.matcher(lastName);
+    	if(matcher.find() && matcher2.find())
+    		return true;
+    	return false;
+    	
+    }
+    public boolean checkEmail(String email) {
+    	Pattern validname = Pattern.compile("^[a-zA-Z0-9_!#$%&’*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$");
+    	Matcher matcher = validname.matcher(email);
+    	if(matcher.find()) {
+    		return true;
+    	}
+    	else {
+    		return false;
+    	}
+    }
+    public boolean checkPassword(String password) {
+    	Pattern validname = Pattern.compile("“^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&-+=()])(?=\\\\S+$).{8, 20}$”");
+    	Matcher matcher = validname.matcher(password);
+    	if(matcher.find()) {
+    		return true;
+    	}
+    	else {
+    		return false;
+    	}
+    }
     @Override
     
     // Login Module Services
 	public String login(String email, String password) {
-		user_rep.login(email,password);
-		return "Login Successful";	
+    	UserDetails u =user_rep.login(email, password);
+		if(user_rep.login(email,password)==null)
+			return "Login Unsuccessful";
+		if(u.getRole().getRoleName().equalsIgnoreCase("Admin"))
+			return "Welcome Administrator....";
+		else
+			return "Welcome"+" "+u.getFirstName()+" "+u.getLastName();
+		
 	}
 
 	@Override
@@ -68,28 +111,78 @@ public class SweetCherryServiceImpl implements SweetCherryService {
 
 	@Override
 	public Optional<UserDetails> allUserDetailsById(int userId) {
-		return user_rep.findById(userId);
+		if(user_rep.existsById(userId)) {
+			Optional<UserDetails> users = user_rep.findById(userId);
+			return users;
+		}
+		return null;
 	}
 
 	@Override
-	public UserDetails updateCustomerProfile(UserDetails customer){
-		 return user_rep.save(customer);
-	}
-
-	@Override
-	public UserDetails registerCustomer(UserDetails registerCustomer){
+	public String updateCustomerProfile(UserDetailsDto customer){
 		
-		return user_rep.save(registerCustomer);
+		if(!checkUserName(customer.getFirstName(),customer.getLastName())) {
+			return "Invalid userName";
+		}
+		
+		
+		if(user_rep.existsById(customer.getUserId())) {
+			Optional<UserDetails> updusr = user_rep.findById(customer.getUserId());
+			UserDetails usr = updusr.get();
+			usr.setFirstName(customer.getFirstName());
+			usr.setLastName(customer.getLastName());
+			usr.setEmail(customer.getEmail());
+			user_rep.save(usr);
+			
+		}
+		return "Profile updated...";
 	}
+
+	
+	@Override
+	public UserDetails registerCustomer(UserDetailsDto user){
+		
+		//if(checkUserName(user.getFirstName(),user.getLastName()) && checkPassword(user.getPassword()) && checkEmail(user.getEmail())) {
+			
+		
+				
+		if(!role_rep.existsById(user.getRoleId())) {
+			Role role = new Role();
+			role.setRoleId(2);
+			role.setRoleName("Customer");
+			role_rep.save(role);
+			
+		}
+		Optional<Role> r = role_rep.findById(user.getRoleId());
+		
+		UserDetails usr = new UserDetails();
+		usr.setFirstName(user.getFirstName());
+		usr.setLastName(user.getLastName());
+		usr.setRole(r.get());
+		usr.setEmail(user.getEmail());
+		usr.setPassword(user.getPassword());
+		
+		return user_rep.save(usr);
+	}
+		//return null;
+	//}
+	
 
 	@Override
 	public String modifyPassword(int userId,String oldPassword, String newPassword) {
-		 user_rep.updatePassword(userId,oldPassword,newPassword);
-		return "Password Modified";
+		Optional<UserDetails> ou = user_rep.findById(userId);
+		if(ou==null)
+			return "Invalid User";
+		
+		UserDetails u = user_rep.login(ou.get().getEmail(), oldPassword);
+		
+		if(u==null)
+			return "Invalid";
+		user_rep.updatePassword(userId,oldPassword,newPassword);
+		return "Password updated successfully...";
 	}
 
-	
-	
+
 	
 	//Cupcake Module Services
 	
