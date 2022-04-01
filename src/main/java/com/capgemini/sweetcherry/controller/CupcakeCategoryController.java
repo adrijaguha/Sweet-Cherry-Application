@@ -27,6 +27,15 @@ public class CupcakeCategoryController {
 		service.addCupcakeCategory(cupcakeCategory);
 		return new ResponseEntity<String>("Cupcake Category added",HttpStatus.OK);
 	}
+	@GetMapping
+	public ResponseEntity<List<CupcakeCategory>> showAllCupcakeCategories(){
+		List<CupcakeCategory> categoryList = service.showAllCupcakeCategories();
+		if(!categoryList.isEmpty())
+		return new ResponseEntity<List<CupcakeCategory>>(categoryList,HttpStatus.OK);
+		else
+			throw new NoSuchCupcakeCategoryExistsException("No categories to display");
+		
+	}
 	@GetMapping("/{cupcakecategoryId}")
 	public ResponseEntity<Optional<CupcakeCategory>> getCupcakeCategoryById(@PathVariable int cupcakecategoryId){
 		if(service.getCupcakeCategoryById(cupcakecategoryId)!=null) {
@@ -37,5 +46,6 @@ public class CupcakeCategoryController {
 				throw new NoSuchCupcakeCategoryExistsException();
 		
 	}
+	
 	
 }
