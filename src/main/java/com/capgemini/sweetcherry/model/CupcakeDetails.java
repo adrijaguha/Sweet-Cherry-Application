@@ -33,7 +33,7 @@ public class CupcakeDetails {
 	private int rating;
 	@Column
 	private int quantity;
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne
 	@JoinColumn(name = "categoryid")
 	private CupcakeCategory cupcakeCategory;
 	
