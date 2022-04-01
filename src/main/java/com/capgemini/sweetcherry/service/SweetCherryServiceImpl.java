@@ -102,6 +102,10 @@ public class SweetCherryServiceImpl implements SweetCherryService {
 	public List<CupcakeDetails> showCupcakeDetails(){
 		return cupcakedetails_rep.findAll();
 	}
+	@Override
+	public List<CupcakeCategory> showAllCupcakeCategories() {
+		return cupcakecategory_rep.findAll();
+	}
 
 	@Override
 	public Optional<CupcakeDetails> findCupcakeDetailsById(int cupcakeId){
