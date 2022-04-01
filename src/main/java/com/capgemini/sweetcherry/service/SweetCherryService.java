@@ -56,6 +56,7 @@ public interface SweetCherryService {
 		public Optional<CupcakeDetails> modifyCupcakeName(int cupcakeId, String cupcakeName) throws NoSuchCupcakeExistsException;
 		public String removeCupcakeDetails(int cupcakeId) throws NoSuchCupcakeExistsException;
 		public Optional<CupcakeCategory> getCupcakeCategoryById(int cupcakecategoryId) throws NoSuchCupcakeCategoryExistsException;
+		public List<CupcakeCategory> showAllCupcakeCategories() throws NoSuchCupcakeCategoryExistsException;
 	
 	// Order module
 	public Payment makeOnlinePayment(PaymentDto payment) throws PaymentFailedException;
