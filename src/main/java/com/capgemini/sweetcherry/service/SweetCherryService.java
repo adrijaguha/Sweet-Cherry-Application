@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.capgemini.sweetcherry.dto.AddressDto;
+import com.capgemini.sweetcherry.dto.OrdersDto;
 import com.capgemini.sweetcherry.dto.PaymentDto;
 import com.capgemini.sweetcherry.exceptions.InvalidIdException;
 import com.capgemini.sweetcherry.exceptions.NoSuchAddressExistsException;
@@ -47,7 +48,7 @@ public interface SweetCherryService {
 		public List<CupcakeDetails> showCupcakeDetails() throws NoSuchCupcakeExistsException;
 		public Optional<CupcakeDetails> findCupcakeDetailsById(int cupcakeId) throws NoSuchCupcakeExistsException;
 		public Optional<CupcakeDetails> modifyCupcakeRating(int cupcakeId,int rating) throws NoSuchCupcakeExistsException;
-		public Orders addCupcakeToCart(Orders order) throws NoSuchOrderExistsException;
+		public String addCupcakeToCart(OrdersDto order) throws NoSuchOrderExistsException;
 		public Payment addPaymentDetails(PaymentDto payment) throws NoSuchOrderExistsException;
 		public CupcakeCategory addCupcakeCategory(CupcakeCategory cupcakeCategory);
 		public Optional<CupcakeDetails> updateCupcakePriceByCupcakeId(int cupcakeId, double price) throws NoSuchCupcakeExistsException;

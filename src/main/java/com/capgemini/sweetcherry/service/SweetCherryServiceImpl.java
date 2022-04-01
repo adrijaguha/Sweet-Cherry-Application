@@ -3,6 +3,7 @@ package com.capgemini.sweetcherry.service;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.capgemini.sweetcherry.dto.AddressDto;
+import com.capgemini.sweetcherry.dto.OrdersDto;
 import com.capgemini.sweetcherry.dto.PaymentDto;
 import com.capgemini.sweetcherry.exceptions.NoSuchAddressExistsException;
 import com.capgemini.sweetcherry.exceptions.NoSuchOrderExistsException;
@@ -132,9 +134,28 @@ public class SweetCherryServiceImpl implements SweetCherryService {
 	}
 
 	@Override
-	public Orders addCupcakeToCart(Orders order){
-		
-		return order_rep.save(order);
+	public String addCupcakeToCart(OrdersDto order){
+		if(order_rep.existsById(order.getOrderId())) {
+			Optional<Orders> o = order_rep.findById(order.getOrderId());
+			Orders newOrder = o.get();
+			Optional<CupcakeDetails> c = cupcakedetails_rep.findById(order.getCupcakeId());
+			CupcakeDetails cupcake =c.get();
+			if(cupcake.getQuantity() < order.getQuantity())
+				return "not available";
+			Optional<UserDetails> user = user_rep.findById(order.getUserId());
+			Map<CupcakeDetails, Integer> cupcakeList = newOrder.getCupcakeDetails();
+			cupcakeList.put(cupcake,cupcakeList.getOrDefault(cupcake, 0)+order.getQuantity());
+			cupcake.setQuantity(cupcake.getQuantity()-order.getQuantity());
+			newOrder.setOrderId(order.getOrderId());
+			newOrder.setCupcakeDetails(cupcakeList);
+			newOrder.setOrderDate(new SimpleDateFormat("dd-MM-yyyy").format(new Date()));
+			newOrder.setOrderStatus("Pending");
+			newOrder.setUserDetails(user.get());
+			newOrder.setTotalPrice(newOrder.getTotalPrice()+order.getQuantity()*cupcake.getPrice());
+			order_rep.save(newOrder);
+			return "added to cart";
+		}
+		return null;
 	}
 
 	@Override

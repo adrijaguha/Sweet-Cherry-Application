@@ -12,8 +12,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.capgemini.sweetcherry.dto.OrdersDto;
+import com.capgemini.sweetcherry.exceptions.CupcakeNotAvailableException;
 import com.capgemini.sweetcherry.exceptions.NoSuchOrderExistsException;
 import com.capgemini.sweetcherry.exceptions.PaymentFailedException;
 import com.capgemini.sweetcherry.model.Orders;
@@ -34,6 +37,16 @@ public class OrderController {
 			throw new NoSuchOrderExistsException();
 		service.cancelOnlineOrder(orderId);
 		return new ResponseEntity<String>("Order cancelled..",HttpStatus.OK);
+	}
+	
+	@PostMapping("/addToCart")
+	public ResponseEntity<String> addCupcakeToCart(@RequestBody OrdersDto order){
+		String response = service.addCupcakeToCart(order);
+		if(response == null)
+			throw new NoSuchOrderExistsException();
+		if(response.equalsIgnoreCase("not available"))
+			throw new CupcakeNotAvailableException();
+		return new ResponseEntity<String>(response,HttpStatus.OK);
 	}
 		
 

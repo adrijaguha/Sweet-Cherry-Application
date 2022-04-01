@@ -10,7 +10,7 @@ public class ExceptionHandling {
 
 	@ExceptionHandler({ NoSuchCupcakeExistsException.class, NoSuchOrderExistsException.class, NoSuchUserExistsException.class,
 			NoSuchAddressExistsException.class, PaymentFailedException.class, InvalidIdException.class,
-			UserNameAndPasswordDoNotMatchRegularExpressionException.class })
+			UserNameAndPasswordDoNotMatchRegularExpressionException.class, CupcakeNotAvailableException.class })
 	public ResponseEntity<Object> exceptionHandler(Exception e) {
 		System.out.println(e.getMessage());
 		return new ResponseEntity<Object>(e.getMessage(),HttpStatus.NOT_FOUND);
