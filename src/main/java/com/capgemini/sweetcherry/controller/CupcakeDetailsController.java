@@ -29,7 +29,7 @@ public class CupcakeDetailsController {
 		Optional<CupcakeCategory> category=service.getCupcakeCategoryById(cupcakedetails.getCupcakeCategory().getCategoryId());
 		if(category!=null) {
 		service.addCupcakeDetails(cupcakedetails);
-		return new ResponseEntity<String>("Cupcake Category added",HttpStatus.OK);
+		return new ResponseEntity<String>("Cupcake Details added",HttpStatus.OK);
 		}
 		else
 			throw new NoSuchCupcakeCategoryExistsException();
