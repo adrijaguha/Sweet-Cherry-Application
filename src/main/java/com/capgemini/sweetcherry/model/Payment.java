@@ -11,7 +11,8 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
-//create sequence payment_seq start with 1000001 increment by 1 maxvalue 9999999;
+//create sequence payment_seq start with 1001 increment by 1 nocache nocycle;
+
 @Entity
 @Table(name="payment")
 public class Payment {
@@ -35,7 +36,7 @@ public class Payment {
 	@NotNull
 	private String status;
 	
-	@OneToOne(cascade = CascadeType.ALL)
+	@OneToOne
 	@JoinColumn(name = "orderid")
 	private Orders order;
 

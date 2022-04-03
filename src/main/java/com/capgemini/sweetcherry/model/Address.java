@@ -1,25 +1,24 @@
 package com.capgemini.sweetcherry.model;
 
-import javax.persistence.CascadeType;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
+//create sequence address_seq start with 101 increment by 1 nocache nocycle;
 
 @Entity
 @Table(name = "address")
 public class Address {
+	@SequenceGenerator(name ="id4_seq", sequenceName="address_seq", allocationSize = 1)
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(generator = "id4_seq")
 	@Column(unique =true)
 	private int addressId;
 	@Column(name="city", length=20)

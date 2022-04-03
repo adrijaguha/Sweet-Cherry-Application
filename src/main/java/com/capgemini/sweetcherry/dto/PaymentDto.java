@@ -1,19 +1,12 @@
 package com.capgemini.sweetcherry.dto;
 
 public class PaymentDto {
-	private int paymentId;
 	private long cardNo;
 	private int cvv;
 	private String cardHolderName;
 	private String expiryDate;
-	private String status;
 	private int orderId;
-	public int getPaymentId() {
-		return paymentId;
-	}
-	public void setPaymentId(int paymentId) {
-		this.paymentId = paymentId;
-	}
+	
 	public long getCardNo() {
 		return cardNo;
 	}
@@ -37,12 +30,6 @@ public class PaymentDto {
 	}
 	public void setExpiryDate(String expiryDate) {
 		this.expiryDate = expiryDate;
-	}
-	public String getStatus() {
-		return status;
-	}
-	public void setStatus(String status) {
-		this.status = status;
 	}
 	public int getOrderId() {
 		return orderId;

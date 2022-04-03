@@ -1,7 +1,9 @@
 package com.capgemini.sweetcherry.service;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -13,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.capgemini.sweetcherry.dto.AddressDto;
+import com.capgemini.sweetcherry.dto.OrdersDisplayDto;
 import com.capgemini.sweetcherry.dto.OrdersDto;
 import com.capgemini.sweetcherry.dto.PaymentDto;
 import com.capgemini.sweetcherry.dto.UserDetailsDto;
@@ -239,21 +242,23 @@ public class SweetCherryServiceImpl implements SweetCherryService {
 	@Override
 	public String addCupcakeToCart(OrdersDto order){
 		Orders newOrder=null;
-		if(user_rep.existsById(order.getUserId()))
+		Map<CupcakeDetails, Integer> cupcakeList =null;
+		if(!user_rep.existsById(order.getUserId()))
 			return null;
 		if(!order_rep.existsById(order.getOrderId())) {
 			newOrder = new Orders();
+			cupcakeList = new HashMap<CupcakeDetails, Integer>();
 		}
-		else{
+		else {
 			Optional<Orders> o = order_rep.findById(order.getOrderId());
 			newOrder = o.get();
+			cupcakeList = newOrder.getCupcakeDetails();
 		}
 			Optional<CupcakeDetails> c = cupcakedetails_rep.findById(order.getCupcakeId());
 			CupcakeDetails cupcake =c.get();
 			if(cupcake.getQuantity() < order.getQuantity())
 				return "not available";
 			Optional<UserDetails> user = user_rep.findById(order.getUserId());
-			Map<CupcakeDetails, Integer> cupcakeList = newOrder.getCupcakeDetails();
 			cupcakeList.put(cupcake,cupcakeList.getOrDefault(cupcake, 0)+order.getQuantity());
 			cupcake.setQuantity(cupcake.getQuantity()-order.getQuantity());
 			newOrder.setOrderId(order.getOrderId());
@@ -264,20 +269,6 @@ public class SweetCherryServiceImpl implements SweetCherryService {
 			newOrder.setTotalPrice(newOrder.getTotalPrice()+order.getQuantity()*cupcake.getPrice());
 			order_rep.save(newOrder);
 			return "added to cart";
-	}
-
-	@Override
-	public Payment addPaymentDetails(PaymentDto paymentdto){
-		Payment pay=new Payment();
-		Optional<Orders> order=order_rep.findById(paymentdto.getOrderId());
-		pay.setPaymentId(paymentdto.getPaymentId());
-		pay.setOrder(order.get());
-		pay.setCardHolderName(paymentdto.getCardHolderName());
-		pay.setCardNo(paymentdto.getCardNo());
-		pay.setCvv(paymentdto.getCvv());
-		pay.setStatus(paymentdto.getStatus());
-		pay.setExpiryDate(paymentdto.getExpiryDate());
-			return payment_rep.save(pay);
 	}
 
 	@Override
@@ -321,20 +312,30 @@ public class SweetCherryServiceImpl implements SweetCherryService {
 	}
 	
 	@Override
-	public Payment makeOnlinePayment(PaymentDto payment) {
-		if(!payment_rep.existsById(payment.getPaymentId())) {
-			Optional<Orders> order = order_rep.findById(payment.getOrderId());
-			Payment pay = new Payment();
-			pay.setCardHolderName(payment.getCardHolderName());
-			pay.setCardNo(payment.getCardNo());
-			pay.setCvv(payment.getCvv());
-			pay.setExpiryDate(payment.getExpiryDate());
-			pay.setPaymentId(payment.getPaymentId());
-			pay.setStatus(payment.getStatus());
-			pay.setOrder(order.get());
-			payment_rep.save(pay);
+	public Payment addPaymentDetails(PaymentDto paymentdto){
+		Payment pay=new Payment();
+		if(!order_rep.existsById(paymentdto.getOrderId()))
+			return null;
+		Optional<Orders> order=order_rep.findById(paymentdto.getOrderId());
+		pay.setOrder(order.get());
+		pay.setCardHolderName(paymentdto.getCardHolderName());
+		pay.setCardNo(paymentdto.getCardNo());
+		pay.setCvv(paymentdto.getCvv());
+		pay.setExpiryDate(paymentdto.getExpiryDate());
+		pay.setStatus("Pending");
+		return payment_rep.save(pay);
+	}
+	
+	@Override
+	public Payment makeOnlinePayment(int paymentId, String status) {
+		Optional<Payment> pay = payment_rep.findById(paymentId);
+		Optional<Orders> order = order_rep.findById(pay.get().getOrder().getOrderId());
+		pay.get().setStatus(status);
+		if(status.equalsIgnoreCase("failed")) {
+			order.get().setOrderStatus("Rejected");
+			return null;
 		}
-		return null;
+		return payment_rep.save(pay.get());
 	}
 	
 	public Payment getPaymentById(int paymentid) {
@@ -356,10 +357,23 @@ public class SweetCherryServiceImpl implements SweetCherryService {
 	
 
 	@Override
-	public List<Orders> showOrderDetailsByUserId(int userId) {
-		if(order_rep.existsById(userId)) {
+	public List<OrdersDisplayDto> showOrderDetailsByUserId(int userId) {
+		if(user_rep.existsById(userId)) {
 			List<Orders> order = order_rep.findByuserId(userId);
-			return order;
+			List<OrdersDisplayDto> orderList = new ArrayList<OrdersDisplayDto>();
+			OrdersDisplayDto ord = null;
+			for(Orders o : order) {
+				ord = new OrdersDisplayDto();
+				ord.setAddressId(o.getAddressId());
+				ord.setOrderDate(o.getOrderDate());
+				ord.setOrderId(o.getOrderId());
+				ord.setOrderStatus(o.getOrderStatus());
+				ord.setTotalPrice(o.getTotalPrice());
+				ord.setUserId(userId);
+				orderList.add(ord);
+			}
+			
+			return orderList;
 		}
 		return null;
 	}
@@ -427,8 +441,22 @@ public class SweetCherryServiceImpl implements SweetCherryService {
 	}
 
 	@Override
-	public List<Orders> getAllOrderDetails() {
-			return order_rep.findAll();
+	public List<OrdersDisplayDto> getAllOrderDetails() {
+		List<Orders> order = order_rep.findAll();
+		List<OrdersDisplayDto> orderList = new ArrayList<OrdersDisplayDto>();
+		OrdersDisplayDto ord = null;
+		for(Orders o : order) {
+			ord = new OrdersDisplayDto();
+			ord.setAddressId(o.getAddressId());
+			ord.setOrderDate(o.getOrderDate());
+			ord.setOrderId(o.getOrderId());
+			ord.setOrderStatus(o.getOrderStatus());
+			ord.setTotalPrice(o.getTotalPrice());
+			ord.setUserId(o.getUserDetails().getUserId());
+			orderList.add(ord);
+		}
+		
+		return orderList;
 	}
 
 	@Override
@@ -441,11 +469,12 @@ public class SweetCherryServiceImpl implements SweetCherryService {
 	}
 
 	@Override
-	public Optional<Orders> makeOnlineOrder(int orderId){
+	public Optional<Orders> makeOnlineOrder(int orderId, int addressId){
 		if(order_rep.existsById(orderId)) {
 			Optional<Orders> orders=order_rep.findById(orderId);
+			orders.get().setAddressId(addressId);
 			orders.get().setOrderDate(new SimpleDateFormat("dd-MM-yyyy").format(new Date()));
-			orders.get().setOrderStatus("Order Placed");
+			orders.get().setOrderStatus("Accepted");
 			order_rep.save(orders.get());
 			return orders;
 		}

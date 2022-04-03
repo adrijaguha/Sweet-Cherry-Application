@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.capgemini.sweetcherry.dto.AddressDto;
+import com.capgemini.sweetcherry.dto.OrdersDisplayDto;
 import com.capgemini.sweetcherry.dto.OrdersDto;
 import com.capgemini.sweetcherry.dto.PaymentDto;
 import com.capgemini.sweetcherry.dto.UserDetailsDto;
@@ -59,15 +60,15 @@ public interface SweetCherryService {
 		public List<CupcakeCategory> showAllCupcakeCategories() throws NoSuchCupcakeCategoryExistsException;
 	
 	// Order module
-	public Payment makeOnlinePayment(PaymentDto payment) throws PaymentFailedException;
+	public Payment makeOnlinePayment(int paymentId, String status) throws PaymentFailedException;
 	public Orders cancelOnlineOrder(int orderId) throws NoSuchOrderExistsException;
-	public List<Orders> showOrderDetailsByUserId(int userId) throws NoSuchOrderExistsException;
+	public List<OrdersDisplayDto> showOrderDetailsByUserId(int userId) throws NoSuchOrderExistsException;
 	public void addDeliveryAddress(AddressDto address) throws NoSuchUserExistsException;
 	public void modifyDeliveryAddress(AddressDto address) throws NoSuchUserExistsException;
 	public boolean deleteDeliveryAddress(int addressId) throws NoSuchAddressExistsException;
-	public List<Orders> getAllOrderDetails() throws NoSuchOrderExistsException;
+	public List<OrdersDisplayDto> getAllOrderDetails() throws NoSuchOrderExistsException;
 	public Optional<Address> getDeliveryAddress(int addressId) throws NoSuchAddressExistsException;
-	public Optional<Orders> makeOnlineOrder(int orderId) throws NoSuchOrderExistsException;
+	public Optional<Orders> makeOnlineOrder(int orderId,int addressId) throws NoSuchOrderExistsException;
 	Optional<Orders> getOrderDetailsById(int orderId) throws NoSuchOrderExistsException;
 	public Payment getPaymentById(int paymentid);
 	

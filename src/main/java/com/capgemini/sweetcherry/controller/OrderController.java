@@ -12,9 +12,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.capgemini.sweetcherry.dto.OrdersDisplayDto;
 import com.capgemini.sweetcherry.dto.OrdersDto;
 import com.capgemini.sweetcherry.exceptions.CupcakeNotAvailableException;
 import com.capgemini.sweetcherry.exceptions.NoSuchOrderExistsException;
@@ -52,19 +54,19 @@ public class OrderController {
 		
 
 	@GetMapping("/userid/{userId}")
-	public ResponseEntity<List<Orders>> showOrderDetailsByUserId(@PathVariable int userId)	{
-		List<Orders> orders=service.showOrderDetailsByUserId(userId);
+	public ResponseEntity<List<OrdersDisplayDto>> showOrderDetailsByUserId(@PathVariable int userId)	{
+		List<OrdersDisplayDto> orders=service.showOrderDetailsByUserId(userId);
 		if(orders == null)
-			throw new NoSuchOrderExistsException();
-		return new ResponseEntity<List<Orders>>(orders,HttpStatus.OK);
+			throw new NoSuchUserExistsException();
+		return new ResponseEntity<List<OrdersDisplayDto>>(orders,HttpStatus.OK);
 	}
 	
 	@GetMapping
-	public ResponseEntity<List<Orders>> getAllOrderDetails() {
-		List<Orders> orderList=service.getAllOrderDetails();
+	public ResponseEntity<List<OrdersDisplayDto>> getAllOrderDetails() {
+		List<OrdersDisplayDto> orderList=service.getAllOrderDetails();
 		if(orderList.isEmpty())
 			throw new NoSuchOrderExistsException();
-		return new ResponseEntity<List<Orders>>(orderList,HttpStatus.OK);
+		return new ResponseEntity<List<OrdersDisplayDto>>(orderList,HttpStatus.OK);
 	}
 	
 	@GetMapping("/orderid/{orderId}")
@@ -76,8 +78,8 @@ public class OrderController {
 	}
 	
 	@PostMapping
-	public ResponseEntity<Optional<Orders>> makeOnlineOrder(@RequestBody int orderId) {
-		Optional<Orders> orders=service.makeOnlineOrder(orderId);
+	public ResponseEntity<Optional<Orders>> makeOnlineOrder(@RequestParam("orderId") int orderId, @RequestParam("addressId") int addressId) {
+		Optional<Orders> orders=service.makeOnlineOrder(orderId,addressId);
 		if(orders == null)
 			throw new NoSuchOrderExistsException();
 		return new ResponseEntity<Optional<Orders>>(orders,HttpStatus.OK);

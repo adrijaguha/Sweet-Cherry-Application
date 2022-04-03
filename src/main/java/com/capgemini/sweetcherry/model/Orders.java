@@ -7,17 +7,24 @@ import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKeyJoinColumn;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+
+//create sequence order_seq start with 11 increment by 1 nocache nocycle;
 
 @Entity
 @Table(name="orders")
 public class Orders {
+	@SequenceGenerator(name ="id6_seq", sequenceName="order_seq", allocationSize = 1)
 	@Id
+	@GeneratedValue(generator = "id6_seq")
+	@Column(unique = true)
 	private int orderId;
 	@Column(length=10)
 	@NotNull
@@ -29,7 +36,10 @@ public class Orders {
 	@NotNull
 	private double totalPrice;
 	
-	@ManyToOne(cascade = CascadeType.ALL)
+	@Column
+	private int addressId;
+	
+	@ManyToOne
 	@JoinColumn(name="userid")
 	private UserDetails userDetails;
 	
@@ -97,6 +107,17 @@ public class Orders {
 		this.orderStatus = orderStatus;
 	}
 
+	
+	public int getAddressId() {
+		return addressId;
+	}
+
+
+	public void setAddressId(int addressId) {
+		this.addressId = addressId;
+	}
+
+
 	public UserDetails getUserDetails() {
 		return userDetails;
 	}
@@ -104,4 +125,5 @@ public class Orders {
 	public void setUserDetails(UserDetails userDetails) {
 		this.userDetails = userDetails;
 	}
+	
 }
