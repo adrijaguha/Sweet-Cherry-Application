@@ -33,15 +33,23 @@ public class AddressController {
 		if(address == null)
 			throw new NoSuchAddressExistsException();
 		service.deleteDeliveryAddress(addressId);
-		return new ResponseEntity<String>("Delivery addrss deleted",HttpStatus.OK);
+		return new ResponseEntity<String>("Delivery address deleted",HttpStatus.OK);
 	}
 	
 	@GetMapping("/{addressId}")
-	public ResponseEntity<Optional<Address>> getDeliveryAddress(@PathVariable int addressId) {
-		Optional<Address> address=service.getDeliveryAddress(addressId);
-		if(address == null)
+	public ResponseEntity<AddressDto> getDeliveryAddress(@PathVariable int addressId) {
+		Optional<Address> add=service.getDeliveryAddress(addressId);
+		if(add == null)
 			throw new NoSuchAddressExistsException();
-		return new ResponseEntity<Optional<Address>>(address,HttpStatus.OK);
+		AddressDto address = new AddressDto();
+		address.setAddressId(addressId);
+		address.setCity(add.get().getCity());
+		address.setHouseNo(add.get().getHouseNo());
+		address.setLandmark(add.get().getLandmark());
+		address.setPinCode(add.get().getPinCode());
+		address.setState(add.get().getState());
+		address.setUserId(add.get().getUser().getUserId());
+		return new ResponseEntity<AddressDto>(address,HttpStatus.OK);
 	}
 	
 	@PostMapping

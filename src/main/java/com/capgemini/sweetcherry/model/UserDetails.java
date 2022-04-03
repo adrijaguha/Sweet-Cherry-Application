@@ -1,5 +1,6 @@
 package com.capgemini.sweetcherry.model;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -39,15 +40,17 @@ public class UserDetails {
 	@JoinColumn(name = "roleId")
 	private Role role;
 	
-	@OneToMany(cascade = CascadeType.ALL)
-	@JoinColumn(name ="addressId")
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<Address> address;
 
 	public Set<Address> getAddress() {
+		if(address == null)
+			return new HashSet<Address>();
 		return address;
 	}
 
 	public void setAddress(Set<Address> address) {
+		
 		this.address = address;
 	}
 

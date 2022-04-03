@@ -8,7 +8,6 @@ public class UserDetailsDto {
 	private String lastName;
 	private String email;
 	private String password;
-	private int roleId;
 	public int getUserId() {
 		return userId;
 	}
@@ -38,12 +37,6 @@ public class UserDetailsDto {
 	}
 	public void setPassword(String password) {
 		this.password = password;
-	}
-	public int getRoleId() {
-		return roleId;
-	}
-	public void setRoleId(int roleId) {
-		this.roleId = roleId;
 	}
 	
 }

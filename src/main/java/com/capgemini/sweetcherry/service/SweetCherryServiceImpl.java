@@ -16,10 +16,6 @@ import com.capgemini.sweetcherry.dto.AddressDto;
 import com.capgemini.sweetcherry.dto.OrdersDto;
 import com.capgemini.sweetcherry.dto.PaymentDto;
 import com.capgemini.sweetcherry.dto.UserDetailsDto;
-import com.capgemini.sweetcherry.exceptions.NoSuchAddressExistsException;
-import com.capgemini.sweetcherry.exceptions.NoSuchOrderExistsException;
-import com.capgemini.sweetcherry.exceptions.NoSuchUserExistsException;
-import com.capgemini.sweetcherry.exceptions.PaymentFailedException;
 import com.capgemini.sweetcherry.model.Address;
 import com.capgemini.sweetcherry.model.CupcakeCategory;
 import com.capgemini.sweetcherry.model.CupcakeDetails;
@@ -57,7 +53,7 @@ public class SweetCherryServiceImpl implements SweetCherryService {
     RoleRepository role_rep; 
     
     public boolean checkUserName(String firstName,String lastName) {
-    	Pattern validname=Pattern.compile("/^[a-z ,.'-]+$/i");
+    	Pattern validname=Pattern.compile("(?i)(^[a-z])((?![ .,'-]$)[a-z .,'-]){0,24}$");
     	Matcher matcher = validname.matcher(firstName);
     	Matcher matcher2 = validname.matcher(lastName);
     	if(matcher.find() && matcher2.find())
@@ -76,7 +72,11 @@ public class SweetCherryServiceImpl implements SweetCherryService {
     	}
     }
     public boolean checkPassword(String password) {
-    	Pattern validname = Pattern.compile("“^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&-+=()])(?=\\\\S+$).{8, 20}$”");
+    	 String regex = "^(?=.*[0-9])"
+                 + "(?=.*[a-z])(?=.*[A-Z])"
+                 + "(?=.*[@#$%^&+=])"
+                 + "(?=\\S+$).{8,20}$";
+    	Pattern validname = Pattern.compile(regex);
     	Matcher matcher = validname.matcher(password);
     	if(matcher.find()) {
     		return true;
@@ -127,14 +127,20 @@ public class SweetCherryServiceImpl implements SweetCherryService {
 		
 		
 		if(user_rep.existsById(customer.getUserId())) {
+			if(user_rep.login(customer.getEmail(), customer.getPassword())!=null) {
 			Optional<UserDetails> updusr = user_rep.findById(customer.getUserId());
 			UserDetails usr = updusr.get();
 			usr.setFirstName(customer.getFirstName());
 			usr.setLastName(customer.getLastName());
 			usr.setEmail(customer.getEmail());
 			user_rep.save(usr);
+			}
+			else
+				return "Wrong username/password";
 			
 		}
+		else
+			return "Invalid User";
 		return "Profile updated...";
 	}
 
@@ -142,18 +148,18 @@ public class SweetCherryServiceImpl implements SweetCherryService {
 	@Override
 	public UserDetails registerCustomer(UserDetailsDto user){
 		
-		//if(checkUserName(user.getFirstName(),user.getLastName()) && checkPassword(user.getPassword()) && checkEmail(user.getEmail())) {
+		if(checkUserName(user.getFirstName(),user.getLastName()) && checkPassword(user.getPassword()) && checkEmail(user.getEmail())) {
 			
 		
 				
-		if(!role_rep.existsById(user.getRoleId())) {
+		if(!role_rep.existsById(2)) {
 			Role role = new Role();
 			role.setRoleId(2);
 			role.setRoleName("Customer");
 			role_rep.save(role);
 			
 		}
-		Optional<Role> r = role_rep.findById(user.getRoleId());
+		Optional<Role> r = role_rep.findById(2);
 		
 		UserDetails usr = new UserDetails();
 		usr.setFirstName(user.getFirstName());
@@ -164,8 +170,8 @@ public class SweetCherryServiceImpl implements SweetCherryService {
 		
 		return user_rep.save(usr);
 	}
-		//return null;
-	//}
+		return null;
+	}
 	
 
 	@Override
@@ -369,7 +375,8 @@ public class SweetCherryServiceImpl implements SweetCherryService {
 			newaddress.setLandmark(address.getLandmark());
 			newaddress.setUser(u1);
 			adList.add(newaddress);
-			address_rep.save(newaddress);
+			u1.setAddress(adList);
+			user_rep.save(u1);
 		}
 	}
 
@@ -391,7 +398,8 @@ public class SweetCherryServiceImpl implements SweetCherryService {
 			newaddress.setLandmark(address.getLandmark());
 			newaddress.setUser(u1);
 			adList.add(newaddress);
-			address_rep.save(newaddress);
+			u1.setAddress(adList);
+			user_rep.save(u1);
 			}
 			else {
 				addDeliveryAddress(address);
@@ -402,7 +410,12 @@ public class SweetCherryServiceImpl implements SweetCherryService {
 	@Override
 	public boolean deleteDeliveryAddress(int addressId) {
 		if(address_rep.existsById(addressId)) {
-			address_rep.deleteById(addressId);
+			Optional<Address> addr = address_rep.findById(addressId);
+			Optional<UserDetails> user = user_rep.findById(addr.get().getUser().getUserId());
+			Set<Address> adList = user.get().getAddress();
+			adList.remove(addr.get());
+			user.get().setAddress(adList);
+			user_rep.save(user.get());
 			return true;
 		}
 		return false;

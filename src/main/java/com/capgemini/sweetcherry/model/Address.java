@@ -3,16 +3,24 @@ package com.capgemini.sweetcherry.model;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
+
 @Entity
 @Table(name = "address")
 public class Address {
 	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(unique =true)
 	private int addressId;
 	@Column(name="city", length=20)
 	@NotNull
@@ -29,7 +37,7 @@ public class Address {
 	@Column(name="landmark", length=30)
 	private String landmark;
 	
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne
 	@JoinColumn(name ="userid")
 	private UserDetails user;
 
