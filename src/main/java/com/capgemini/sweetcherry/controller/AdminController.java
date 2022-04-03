@@ -1,5 +1,6 @@
 package com.capgemini.sweetcherry.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.capgemini.sweetcherry.dto.UserDetailsDto;
 import com.capgemini.sweetcherry.exceptions.NoSuchUserExistsException;
 import com.capgemini.sweetcherry.model.UserDetails;
 import com.capgemini.sweetcherry.service.SweetCherryService;
@@ -21,10 +23,21 @@ public class AdminController {
 	SweetCherryService service;
 	
 	@GetMapping
-	public ResponseEntity<List<UserDetails>> allDetailsOfAdminAndUser(){
+	public ResponseEntity<List<UserDetailsDto>> allDetailsOfAdminAndUser(){
 		List<UserDetails> allDetails = service.allDetailsOfAdminAndUser();
 		if(allDetails.isEmpty())
 			throw new NoSuchUserExistsException();
-		return new ResponseEntity<List<UserDetails>>(allDetails,HttpStatus.OK);
+		List<UserDetailsDto> userList = new ArrayList<UserDetailsDto>();
+		UserDetailsDto user = null;
+		for(UserDetails u : allDetails) {
+			user = new UserDetailsDto();
+			user.setUserId(u.getUserId());
+			user.setEmail(u.getEmail());
+			user.setFirstName(u.getFirstName());
+			user.setLastName(u.getLastName());
+			user.setPassword(u.getPassword());
+			userList.add(user);
+		}
+		return new ResponseEntity<List<UserDetailsDto>>(userList,HttpStatus.OK);
 	}
 }

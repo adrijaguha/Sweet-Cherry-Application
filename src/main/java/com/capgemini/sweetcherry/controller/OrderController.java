@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.capgemini.sweetcherry.dto.OrdersDto;
 import com.capgemini.sweetcherry.exceptions.CupcakeNotAvailableException;
 import com.capgemini.sweetcherry.exceptions.NoSuchOrderExistsException;
+import com.capgemini.sweetcherry.exceptions.NoSuchUserExistsException;
 import com.capgemini.sweetcherry.exceptions.PaymentFailedException;
 import com.capgemini.sweetcherry.model.Orders;
 import com.capgemini.sweetcherry.model.Payment;
@@ -43,7 +44,7 @@ public class OrderController {
 	public ResponseEntity<String> addCupcakeToCart(@RequestBody OrdersDto order){
 		String response = service.addCupcakeToCart(order);
 		if(response == null)
-			throw new NoSuchOrderExistsException();
+			throw new NoSuchUserExistsException();
 		if(response.equalsIgnoreCase("not available"))
 			throw new CupcakeNotAvailableException();
 		return new ResponseEntity<String>(response,HttpStatus.OK);

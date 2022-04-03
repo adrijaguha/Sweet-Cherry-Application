@@ -54,12 +54,18 @@ public class UserDetailsController {
 		return new ResponseEntity<String>("Password updated Successfully",HttpStatus.OK);
 	}
 	
-	@GetMapping("/userId/{userId}")
-	public ResponseEntity<Optional<UserDetails>> allUserDetailsById(@PathVariable int UserId){
-		Optional<UserDetails> usrdetails = service.allUserDetailsById(UserId);
+	@GetMapping("/{userId}")
+	public ResponseEntity<UserDetailsDto> allUserDetailsById(@PathVariable int userId){
+		Optional<UserDetails> usrdetails = service.allUserDetailsById(userId);
 		if(usrdetails==null)
 			throw new NoSuchUserExistsException();
-		return new ResponseEntity<Optional<UserDetails>>(usrdetails,HttpStatus.OK);
+		UserDetailsDto user = new UserDetailsDto();
+		user.setUserId(usrdetails.get().getUserId());
+		user.setEmail(usrdetails.get().getEmail());
+		user.setFirstName(usrdetails.get().getFirstName());
+		user.setLastName(usrdetails.get().getLastName());
+		user.setPassword(usrdetails.get().getPassword());
+		return new ResponseEntity<UserDetailsDto>(user,HttpStatus.OK);
 	}
 	
 	

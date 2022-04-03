@@ -238,9 +238,16 @@ public class SweetCherryServiceImpl implements SweetCherryService {
 
 	@Override
 	public String addCupcakeToCart(OrdersDto order){
-		if(order_rep.existsById(order.getOrderId())) {
+		Orders newOrder=null;
+		if(user_rep.existsById(order.getUserId()))
+			return null;
+		if(!order_rep.existsById(order.getOrderId())) {
+			newOrder = new Orders();
+		}
+		else{
 			Optional<Orders> o = order_rep.findById(order.getOrderId());
-			Orders newOrder = o.get();
+			newOrder = o.get();
+		}
 			Optional<CupcakeDetails> c = cupcakedetails_rep.findById(order.getCupcakeId());
 			CupcakeDetails cupcake =c.get();
 			if(cupcake.getQuantity() < order.getQuantity())
@@ -257,8 +264,6 @@ public class SweetCherryServiceImpl implements SweetCherryService {
 			newOrder.setTotalPrice(newOrder.getTotalPrice()+order.getQuantity()*cupcake.getPrice());
 			order_rep.save(newOrder);
 			return "added to cart";
-		}
-		return null;
 	}
 
 	@Override

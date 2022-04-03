@@ -15,7 +15,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
-//create sequence user_seq start with 100001 increment by 1 maxvalue 999999;
+//create sequence user_seq start with 1001 increment by 1 nocache nocycle;
 @Entity
 @Table(name = "user_details")
 public class UserDetails {
@@ -29,7 +29,7 @@ public class UserDetails {
 	@Column(length=20)
 	@NotNull
 	private String lastName;
-	@Column(length=40)
+	@Column(length=40, unique = true)
 	@NotNull
 	private String email;
 	@Column(length=20)

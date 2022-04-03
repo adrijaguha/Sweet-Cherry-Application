@@ -1,6 +1,5 @@
 package com.capgemini.sweetcherry.model;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -21,7 +20,7 @@ public class CupcakeDetails {
 	@Id
 	@GeneratedValue(generator = "id2_seq")
 	private int cupcakeId;
-	@Column(length=30)
+	@Column(length=30, unique = true)
 	@NotNull
 	private String cupcakeName;
 	@Column(length=80)
