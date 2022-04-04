@@ -333,6 +333,8 @@ public class SweetCherryServiceImpl implements SweetCherryService {
 		pay.get().setStatus(status);
 		if(status.equalsIgnoreCase("failed")) {
 			order.get().setOrderStatus("Rejected");
+			order_rep.save(order.get());
+			payment_rep.save(pay.get());
 			return null;
 		}
 		return payment_rep.save(pay.get());
@@ -395,6 +397,7 @@ public class SweetCherryServiceImpl implements SweetCherryService {
 			newaddress.setUser(u1);
 			adList.add(newaddress);
 			u1.setAddress(adList);
+			address_rep.save(newaddress);
 			user_rep.save(u1);
 		}
 	}
@@ -469,26 +472,59 @@ public class SweetCherryServiceImpl implements SweetCherryService {
 	}
 
 	@Override
-	public Optional<Orders> makeOnlineOrder(int orderId, int addressId){
+	public OrdersDisplayDto makeOnlineOrder(int orderId, int addressId){
 		if(order_rep.existsById(orderId)) {
 			Optional<Orders> orders=order_rep.findById(orderId);
 			orders.get().setAddressId(addressId);
 			orders.get().setOrderDate(new SimpleDateFormat("dd-MM-yyyy").format(new Date()));
-			orders.get().setOrderStatus("Accepted");
+			orders.get().setOrderStatus("Pending");
 			order_rep.save(orders.get());
-			return orders;
+			OrdersDisplayDto ord = new OrdersDisplayDto();
+			Orders o = orders.get();
+			ord.setAddressId(o.getAddressId());
+			ord.setOrderDate(o.getOrderDate());
+			ord.setOrderId(o.getOrderId());
+			ord.setOrderStatus(o.getOrderStatus());
+			ord.setTotalPrice(o.getTotalPrice());
+			ord.setUserId(o.getUserDetails().getUserId());
+			return ord;
 		}
 		return null;
 	}
 
 	@Override
-	public Optional<Orders> getOrderDetailsById(int orderId) {
+	public OrdersDisplayDto getOrderDetailsById(int orderId) {
 		if(order_rep.existsById(orderId)) {
 			Optional<Orders> orders=order_rep.findById(orderId);
-			return orders;
+			OrdersDisplayDto ord = new OrdersDisplayDto();
+			Orders o = orders.get();
+			ord.setAddressId(o.getAddressId());
+			ord.setOrderDate(o.getOrderDate());
+			ord.setOrderId(o.getOrderId());
+			ord.setOrderStatus(o.getOrderStatus());
+			ord.setTotalPrice(o.getTotalPrice());
+			ord.setUserId(o.getUserDetails().getUserId());
+			return ord;
 		}
 		return null;
-		
 	}
 
+	@Override
+	public OrdersDisplayDto confirmOrderStatus(int orderId, String status) {
+		if(order_rep.existsById(orderId)) {
+			Optional<Orders> orders=order_rep.findById(orderId);
+			orders.get().setOrderStatus(status);
+			order_rep.save(orders.get());
+			OrdersDisplayDto ord = new OrdersDisplayDto();
+			Orders o = orders.get();
+			ord.setAddressId(o.getAddressId());
+			ord.setOrderDate(o.getOrderDate());
+			ord.setOrderId(o.getOrderId());
+			ord.setOrderStatus(o.getOrderStatus());
+			ord.setTotalPrice(o.getTotalPrice());
+			ord.setUserId(o.getUserDetails().getUserId());
+			return ord;
+			}
+		return null;
+	}
 }

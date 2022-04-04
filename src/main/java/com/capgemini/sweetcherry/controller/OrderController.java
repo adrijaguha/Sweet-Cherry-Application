@@ -35,7 +35,7 @@ public class OrderController {
 	
 	@DeleteMapping("/{orderId}")
 	public ResponseEntity<String> cancelOnlineOrder (@PathVariable int orderId) {
-		Optional<Orders> order = service.getOrderDetailsById(orderId);
+		OrdersDisplayDto order = service.getOrderDetailsById(orderId);
 		if(order == null)
 			throw new NoSuchOrderExistsException();
 		service.cancelOnlineOrder(orderId);
@@ -70,18 +70,26 @@ public class OrderController {
 	}
 	
 	@GetMapping("/orderid/{orderId}")
-	public ResponseEntity<Optional<Orders>> getOrderDetailsById(@PathVariable int orderId) {
-		Optional<Orders> orders = service.getOrderDetailsById(orderId);
+	public ResponseEntity<OrdersDisplayDto> getOrderDetailsById(@PathVariable int orderId) {
+		OrdersDisplayDto orders = service.getOrderDetailsById(orderId);
 		if(orders == null)
 			throw new NoSuchOrderExistsException();
-		return new ResponseEntity<Optional<Orders>>(orders,HttpStatus.OK);
+		return new ResponseEntity<OrdersDisplayDto>(orders,HttpStatus.OK);
 	}
 	
 	@PostMapping
-	public ResponseEntity<Optional<Orders>> makeOnlineOrder(@RequestParam("orderId") int orderId, @RequestParam("addressId") int addressId) {
-		Optional<Orders> orders=service.makeOnlineOrder(orderId,addressId);
+	public ResponseEntity<OrdersDisplayDto> makeOnlineOrder(@RequestParam("orderId") int orderId, @RequestParam("addressId") int addressId) {
+		OrdersDisplayDto orders=service.makeOnlineOrder(orderId,addressId);
 		if(orders == null)
 			throw new NoSuchOrderExistsException();
-		return new ResponseEntity<Optional<Orders>>(orders,HttpStatus.OK);
+		return new ResponseEntity<OrdersDisplayDto>(orders,HttpStatus.OK);
+	}
+	
+	@PostMapping("/status/{orderId}")
+	public ResponseEntity<OrdersDisplayDto> confirmOrderStatus(@RequestParam("orderId") int orderId, @RequestParam("orderStatus") String orderStatus) {
+		OrdersDisplayDto orders=service.confirmOrderStatus(orderId,orderStatus);
+		if(orders == null)
+			throw new NoSuchOrderExistsException();
+		return new ResponseEntity<OrdersDisplayDto>(orders,HttpStatus.OK);
 	}
 }

@@ -25,7 +25,7 @@ import com.capgemini.sweetcherry.model.UserDetails;
 
 public interface SweetCherryService {
 	// Login Module
-	Optional<UserDetails> viewUserDetailsById(int userId);
+	public Optional<UserDetails> viewUserDetailsById(int userId);
 	
 	// LOGIN MODULE -------------------------------------------------------------------------------
 	
@@ -68,8 +68,9 @@ public interface SweetCherryService {
 	public boolean deleteDeliveryAddress(int addressId) throws NoSuchAddressExistsException;
 	public List<OrdersDisplayDto> getAllOrderDetails() throws NoSuchOrderExistsException;
 	public Optional<Address> getDeliveryAddress(int addressId) throws NoSuchAddressExistsException;
-	public Optional<Orders> makeOnlineOrder(int orderId,int addressId) throws NoSuchOrderExistsException;
-	Optional<Orders> getOrderDetailsById(int orderId) throws NoSuchOrderExistsException;
+	public OrdersDisplayDto makeOnlineOrder(int orderId,int addressId) throws NoSuchOrderExistsException;
+	public OrdersDisplayDto confirmOrderStatus(int orderId, String status) throws NoSuchOrderExistsException;
+	public OrdersDisplayDto getOrderDetailsById(int orderId) throws NoSuchOrderExistsException;
 	public Payment getPaymentById(int paymentid);
 	
 }

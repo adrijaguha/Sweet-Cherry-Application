@@ -11,7 +11,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-//create sequence cupcake_seq start with 1001 increment by 2 maxvalue 5000;
+//create sequence cupcake_seq start with 1001 increment by 2 nocache nocycle;
 
 @Entity
 @Table(name="cupcake_details")

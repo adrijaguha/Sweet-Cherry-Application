@@ -16,6 +16,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 //create sequence user_seq start with 1001 increment by 1 nocache nocycle;
+
 @Entity
 @Table(name = "user_details")
 public class UserDetails {
