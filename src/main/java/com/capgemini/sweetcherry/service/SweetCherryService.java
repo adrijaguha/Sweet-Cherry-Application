@@ -52,15 +52,16 @@ public interface SweetCherryService {
 		public CupcakeDetails addCupcakeDetails(CupcakeDetails cupcakedetails) throws NoSuchCupcakeExistsException;
 		public List<CupcakeDetails> showCupcakeDetails() throws NoSuchCupcakeExistsException;
 		public Optional<CupcakeDetails> findCupcakeDetailsById(int cupcakeId) throws NoSuchCupcakeExistsException;
-		public Optional<CupcakeDetails> modifyCupcakeRating(int cupcakeId,int rating) throws NoSuchCupcakeExistsException;
+		public String modifyCupcakeRating(int cupcakeId,int rating) throws NoSuchCupcakeExistsException;
 		public String addCupcakeToCart(OrdersDto order) throws NoSuchOrderExistsException;
 		public Payment addPaymentDetails(PaymentDto payment) throws NoSuchOrderExistsException;
 		public CupcakeCategory addCupcakeCategory(CupcakeCategory cupcakeCategory);
-		public Optional<CupcakeDetails> updateCupcakePriceByCupcakeId(int cupcakeId, double price) throws NoSuchCupcakeExistsException;
-		public Optional<CupcakeDetails> modifyCupcakeName(int cupcakeId, String cupcakeName) throws NoSuchCupcakeExistsException;
+		public String updateCupcakePriceByCupcakeId(int cupcakeId, double price) throws NoSuchCupcakeExistsException;
+		public String modifyCupcakeName(int cupcakeId, String cupcakeName) throws NoSuchCupcakeExistsException;
 		public String removeCupcakeDetails(int cupcakeId) throws NoSuchCupcakeExistsException;
 		public Optional<CupcakeCategory> getCupcakeCategoryById(int cupcakecategoryId) throws NoSuchCupcakeCategoryExistsException;
 		public List<CupcakeCategory> showAllCupcakeCategories() throws NoSuchCupcakeCategoryExistsException;
+		public String updateCupcakeQuantityById(int cupcakeId,int quantity) throws NoSuchCupcakeExistsException;
 	
 	// Order module
 	public Payment confirmPayment(int paymentId, String status) throws PaymentFailedException;
