@@ -6,9 +6,12 @@ import java.util.Optional;
 import com.capgemini.sweetcherry.dto.AddressDto;
 import com.capgemini.sweetcherry.dto.OrdersDisplayDto;
 import com.capgemini.sweetcherry.dto.OrdersDto;
+import com.capgemini.sweetcherry.dto.PaymentDisplayDto;
 import com.capgemini.sweetcherry.dto.PaymentDto;
 import com.capgemini.sweetcherry.dto.UserDetailsDto;
 import com.capgemini.sweetcherry.exceptions.InvalidIdException;
+import com.capgemini.sweetcherry.exceptions.NoAddressExistsException;
+import com.capgemini.sweetcherry.exceptions.NoPaymentExistsException;
 import com.capgemini.sweetcherry.exceptions.NoSuchAddressExistsException;
 import com.capgemini.sweetcherry.exceptions.NoSuchCupcakeCategoryExistsException;
 import com.capgemini.sweetcherry.exceptions.NoSuchCupcakeExistsException;
@@ -60,17 +63,21 @@ public interface SweetCherryService {
 		public List<CupcakeCategory> showAllCupcakeCategories() throws NoSuchCupcakeCategoryExistsException;
 	
 	// Order module
-	public Payment makeOnlinePayment(int paymentId, String status) throws PaymentFailedException;
+	public Payment confirmPayment(int paymentId, String status) throws PaymentFailedException;
 	public Orders cancelOnlineOrder(int orderId) throws NoSuchOrderExistsException;
 	public List<OrdersDisplayDto> showOrderDetailsByUserId(int userId) throws NoSuchOrderExistsException;
 	public void addDeliveryAddress(AddressDto address) throws NoSuchUserExistsException;
 	public void modifyDeliveryAddress(AddressDto address) throws NoSuchUserExistsException;
 	public boolean deleteDeliveryAddress(int addressId) throws NoSuchAddressExistsException;
 	public List<OrdersDisplayDto> getAllOrderDetails() throws NoSuchOrderExistsException;
+	public List<AddressDto> showAllAddress() throws NoAddressExistsException;
+	public List<AddressDto> showAddressByUserId(int userId) throws NoSuchAddressExistsException;
 	public Optional<Address> getDeliveryAddress(int addressId) throws NoSuchAddressExistsException;
 	public OrdersDisplayDto makeOnlineOrder(int orderId,int addressId) throws NoSuchOrderExistsException;
 	public OrdersDisplayDto confirmOrderStatus(int orderId, String status) throws NoSuchOrderExistsException;
 	public OrdersDisplayDto getOrderDetailsById(int orderId) throws NoSuchOrderExistsException;
-	public Payment getPaymentById(int paymentid);
+	public List<PaymentDisplayDto> showPaymentById(int orderId) throws NoSuchOrderExistsException;
+
+	public List<PaymentDisplayDto> showAllPayment() throws NoPaymentExistsException;
 	
 }

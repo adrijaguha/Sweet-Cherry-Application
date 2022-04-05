@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import com.capgemini.sweetcherry.dto.AddressDto;
 import com.capgemini.sweetcherry.dto.OrdersDisplayDto;
 import com.capgemini.sweetcherry.dto.OrdersDto;
+import com.capgemini.sweetcherry.dto.PaymentDisplayDto;
 import com.capgemini.sweetcherry.dto.PaymentDto;
 import com.capgemini.sweetcherry.dto.UserDetailsDto;
 import com.capgemini.sweetcherry.model.Address;
@@ -327,7 +328,48 @@ public class SweetCherryServiceImpl implements SweetCherryService {
 	}
 	
 	@Override
-	public Payment makeOnlinePayment(int paymentId, String status) {
+	public List<PaymentDisplayDto> showAllPayment() {
+		List<Payment> payment = payment_rep.findAll();
+		List<PaymentDisplayDto> paymentList = new ArrayList<PaymentDisplayDto>();
+		PaymentDisplayDto pay = null;
+		for(Payment py : payment) {
+			pay = new PaymentDisplayDto();
+			pay.setCardHolderName(py.getCardHolderName());
+			pay.setCardNo(py.getCardNo());
+			pay.setCvv(py.getCvv());
+			pay.setExpiryDate(py.getExpiryDate());
+			pay.setPaymentId(py.getPaymentId());
+			pay.setStatus(py.getStatus());
+			pay.setOrderId(py.getOrder().getOrderId());
+			paymentList.add(pay);
+		}
+		return paymentList;
+	}
+
+	@Override
+	public List<PaymentDisplayDto> showPaymentById(int orderId) {
+		if(order_rep.existsById(orderId)) {
+			List<Payment> payment = payment_rep.findByOrderId(orderId);
+			List<PaymentDisplayDto> paymentList = new ArrayList<PaymentDisplayDto>();
+			PaymentDisplayDto pay = null;
+			for(Payment py : payment) {
+				pay = new PaymentDisplayDto();
+				pay.setCardHolderName(py.getCardHolderName());
+				pay.setCardNo(py.getCardNo());
+				pay.setCvv(py.getCvv());
+				pay.setExpiryDate(py.getExpiryDate());
+				pay.setPaymentId(py.getPaymentId());
+				pay.setStatus(py.getStatus());
+				pay.setOrderId(py.getOrder().getOrderId());
+				paymentList.add(pay);
+			}
+			return paymentList;
+		}
+		return null;
+	}
+	
+	@Override
+	public Payment confirmPayment(int paymentId, String status) {
 		Optional<Payment> pay = payment_rep.findById(paymentId);
 		Optional<Orders> order = order_rep.findById(pay.get().getOrder().getOrderId());
 		pay.get().setStatus(status);
@@ -427,6 +469,47 @@ public class SweetCherryServiceImpl implements SweetCherryService {
 				addDeliveryAddress(address);
 			}
 		}
+	}
+	
+	@Override
+	public List<AddressDto> showAllAddress() {
+		List<Address> address = address_rep.findAll();
+		List<AddressDto> addressList = new ArrayList<AddressDto>();
+		AddressDto add = null;
+		for(Address ad : address) {
+			add = new AddressDto();
+			add.setAddressId(ad.getAddressId());
+			add.setCity(ad.getCity());
+			add.setHouseNo(ad.getHouseNo());
+			add.setLandmark(ad.getLandmark());
+			add.setPinCode(ad.getPinCode());
+			add.setState(ad.getState());
+			add.setUserId(ad.getUser().getUserId());
+			addressList.add(add);
+		}
+		return addressList;
+	}
+
+	@Override
+	public List<AddressDto> showAddressByUserId(int userId) {
+		if(user_rep.existsById(userId)) {
+			List<Address> address = address_rep.findByuserId(userId);
+			List<AddressDto> addressList = new ArrayList<AddressDto>();
+			AddressDto add = null;
+			for(Address ad : address) {
+				add = new AddressDto();
+				add.setAddressId(ad.getAddressId());
+				add.setCity(ad.getCity());
+				add.setHouseNo(ad.getHouseNo());
+				add.setLandmark(ad.getLandmark());
+				add.setPinCode(ad.getPinCode());
+				add.setState(ad.getState());
+				add.setUserId(ad.getUser().getUserId());
+				addressList.add(add);
+			}
+			return addressList;
+		}
+		return null;
 	}
 
 	@Override

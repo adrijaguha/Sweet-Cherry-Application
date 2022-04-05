@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class ExceptionHandling {
 
-	@ExceptionHandler({ NoSuchCupcakeExistsException.class, NoSuchOrderExistsException.class, NoSuchUserExistsException.class,
+	@ExceptionHandler({NoAddressExistsException.class, NoPaymentExistsException.class, NoSuchCupcakeExistsException.class, NoSuchOrderExistsException.class, NoSuchUserExistsException.class,
 			NoSuchAddressExistsException.class, PaymentFailedException.class, InvalidIdException.class,
 			UserNameAndPasswordDoNotMatchRegularExpressionException.class, CupcakeNotAvailableException.class })
 	public ResponseEntity<Object> exceptionHandler(Exception e) {

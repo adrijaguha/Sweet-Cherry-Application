@@ -1,5 +1,6 @@
 package com.capgemini.sweetcherry.controller;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.capgemini.sweetcherry.dto.AddressDto;
+import com.capgemini.sweetcherry.exceptions.NoAddressExistsException;
 import com.capgemini.sweetcherry.exceptions.NoSuchAddressExistsException;
 import com.capgemini.sweetcherry.exceptions.NoSuchUserExistsException;
 import com.capgemini.sweetcherry.model.Address;
@@ -68,5 +70,22 @@ public class AddressController {
 			throw new NoSuchUserExistsException();
 		service.modifyDeliveryAddress(address);
 		return new ResponseEntity<String>("Address Modified",HttpStatus.OK);
+	}
+	@GetMapping
+	public ResponseEntity<List<AddressDto>> showAllAddress(){
+		List<AddressDto> addressList = service.showAllAddress();
+		if(!addressList.isEmpty())
+			return new ResponseEntity<List<AddressDto>>(addressList,HttpStatus.OK);
+		else
+			throw new NoAddressExistsException("No address to display");
+		
+	}
+	
+	@GetMapping("/userid/{userId}")
+	public ResponseEntity<List<AddressDto>> showAddressByUserId(@PathVariable int userId) {
+		List<AddressDto> address=service.showAddressByUserId(userId);
+		if(address == null)
+			throw new NoSuchAddressExistsException();
+		return new ResponseEntity<List<AddressDto>>(address,HttpStatus.OK);
 	}
 }
