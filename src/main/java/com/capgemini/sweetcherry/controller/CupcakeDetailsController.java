@@ -56,32 +56,42 @@ public class CupcakeDetailsController {
 	}
 	
 	@PutMapping("/updateprice/{cupcakeId}/{price}")
-	public ResponseEntity<Optional<CupcakeDetails>> updateCupcakePriceByCupcakeId(@PathVariable int cupcakeId,@PathVariable double price){
+	public ResponseEntity<String> updateCupcakePriceByCupcakeId(@PathVariable int cupcakeId,@PathVariable double price){
 		if(service.findCupcakeDetailsById(cupcakeId)!=null) {
-	    Optional<CupcakeDetails> modified_cupcake = service.updateCupcakePriceByCupcakeId(cupcakeId, price);
-	    return new ResponseEntity<Optional<CupcakeDetails>>(modified_cupcake,HttpStatus.OK);
+			String message = service.updateCupcakePriceByCupcakeId(cupcakeId, price);
+	    return new ResponseEntity<String>(message,HttpStatus.OK);
 		}
 		else
 			throw new NoSuchCupcakeExistsException();
 	}
 	
 	@PutMapping("/update rating/{cupcakeId}/{rating}")
-	public ResponseEntity<Optional<CupcakeDetails>> modifyCupcakeRating(@PathVariable int cupcakeId,@PathVariable int rating){
+	public ResponseEntity<String> modifyCupcakeRating(@PathVariable int cupcakeId,@PathVariable int rating){
 		if(service.findCupcakeDetailsById(cupcakeId)!=null) {
-			Optional<CupcakeDetails> modified_cupcake = service.modifyCupcakeRating(cupcakeId, rating);
-	        return new ResponseEntity<Optional<CupcakeDetails>>(modified_cupcake,HttpStatus.OK);
+			String message = service.modifyCupcakeRating(cupcakeId, rating);
+	        return new ResponseEntity<String>(message,HttpStatus.OK);
 		}
 		else
 			throw new NoSuchCupcakeExistsException();
 	}
 	@PutMapping("/update cupcakename/{cupcakeId}/{cupcakeName}")
-	public ResponseEntity<Optional<CupcakeDetails>> modifyCupcakeName(@PathVariable int cupcakeId,@PathVariable String cupcakeName){
+	public ResponseEntity<String> modifyCupcakeName(@PathVariable int cupcakeId,@PathVariable String cupcakeName){
 		if(service.findCupcakeDetailsById(cupcakeId)!=null) {
-		Optional<CupcakeDetails> modified_cupcake = service.modifyCupcakeName(cupcakeId, cupcakeName);
-		return new ResponseEntity<Optional<CupcakeDetails>>(modified_cupcake,HttpStatus.OK);
+		String message = service.modifyCupcakeName(cupcakeId, cupcakeName);
+		return new ResponseEntity<String>(message,HttpStatus.OK);
 	}
 	else
 		throw new NoSuchCupcakeExistsException();
+	}
+	@PutMapping("/update quantity/{cupcakeId}/{quantity}")
+	public ResponseEntity<String> updateCupcakeQuantityById(@PathVariable int cupcakeId,@PathVariable int quantity) {
+		if(service.findCupcakeDetailsById(cupcakeId)!=null) 
+		{
+			String message = service.updateCupcakeQuantityById(cupcakeId, quantity);
+			return new ResponseEntity<String>(message,HttpStatus.OK);
+		}
+		else
+			throw new NoSuchCupcakeExistsException();
 	}
 	
 	@DeleteMapping("/{cupcakeId}")
