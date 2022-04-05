@@ -414,6 +414,7 @@ public class SweetCherryServiceImpl implements SweetCherryService {
 				ord.setOrderStatus(o.getOrderStatus());
 				ord.setTotalPrice(o.getTotalPrice());
 				ord.setUserId(userId);
+				ord.setCupcakeDetails(o.getCupcakeDetails());
 				orderList.add(ord);
 			}
 			
@@ -539,6 +540,7 @@ public class SweetCherryServiceImpl implements SweetCherryService {
 			ord.setOrderStatus(o.getOrderStatus());
 			ord.setTotalPrice(o.getTotalPrice());
 			ord.setUserId(o.getUserDetails().getUserId());
+			ord.setCupcakeDetails(o.getCupcakeDetails());
 			orderList.add(ord);
 		}
 		
@@ -570,6 +572,7 @@ public class SweetCherryServiceImpl implements SweetCherryService {
 			ord.setOrderStatus(o.getOrderStatus());
 			ord.setTotalPrice(o.getTotalPrice());
 			ord.setUserId(o.getUserDetails().getUserId());
+			ord.setCupcakeDetails(o.getCupcakeDetails());
 			return ord;
 		}
 		return null;
@@ -587,6 +590,7 @@ public class SweetCherryServiceImpl implements SweetCherryService {
 			ord.setOrderStatus(o.getOrderStatus());
 			ord.setTotalPrice(o.getTotalPrice());
 			ord.setUserId(o.getUserDetails().getUserId());
+			ord.setCupcakeDetails(o.getCupcakeDetails());
 			return ord;
 		}
 		return null;
@@ -606,6 +610,7 @@ public class SweetCherryServiceImpl implements SweetCherryService {
 			ord.setOrderStatus(o.getOrderStatus());
 			ord.setTotalPrice(o.getTotalPrice());
 			ord.setUserId(o.getUserDetails().getUserId());
+			ord.setCupcakeDetails(o.getCupcakeDetails());
 			return ord;
 			}
 		return null;

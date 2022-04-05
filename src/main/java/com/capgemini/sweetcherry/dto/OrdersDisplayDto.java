@@ -1,5 +1,9 @@
 package com.capgemini.sweetcherry.dto;
 
+import java.util.Map;
+
+import com.capgemini.sweetcherry.model.CupcakeDetails;
+
 public class OrdersDisplayDto {
 	private int orderId;
 	private String orderDate;
@@ -7,6 +11,7 @@ public class OrdersDisplayDto {
 	private double totalPrice;
 	private int addressId;
 	private int userId;
+	private Map<CupcakeDetails,Integer> cupcakeDetails=null;
 	public int getOrderId() {
 		return orderId;
 	}
@@ -43,5 +48,12 @@ public class OrdersDisplayDto {
 	public void setUserId(int userId) {
 		this.userId = userId;
 	}
+	public Map<CupcakeDetails, Integer> getCupcakeDetails() {
+		return cupcakeDetails;
+	}
+	public void setCupcakeDetails(Map<CupcakeDetails, Integer> cupcakeDetails) {
+		this.cupcakeDetails = cupcakeDetails;
+	}
+	
 	
 }

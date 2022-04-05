@@ -53,7 +53,6 @@ public class CupcakeDetailsController {
 		}
 		else
 			throw new NoSuchCupcakeExistsException();
-
 	}
 	
 	@PutMapping("/updateprice/{cupcakeId}/{price}")
