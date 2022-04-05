@@ -231,10 +231,10 @@ public class SweetCherryServiceImpl implements SweetCherryService {
 	}
 	
 	@Override
-	public Optional<CupcakeDetails> modifyCupcakeRating(int cupcakeId, int rating){
+	public String modifyCupcakeRating(int cupcakeId, int rating){
 		if(cupcakedetails_rep.existsById(cupcakeId)) {
 		   cupcakedetails_rep.updateRating(cupcakeId, rating);
-			return cupcakedetails_rep.findById(cupcakeId);
+			return "Cupcake rating updated";
 		}
 		else
 			return null;
@@ -271,6 +271,18 @@ public class SweetCherryServiceImpl implements SweetCherryService {
 			order_rep.save(newOrder);
 			return "added to cart";
 	}
+	
+	@Override
+	public String updateCupcakeQuantityById(int cupcakeId,int quantity)
+	{
+		
+		if(cupcakedetails_rep.existsById(cupcakeId)) {
+		 cupcakedetails_rep.updateCupcakeQuantityById(cupcakeId, quantity);
+				return "Cupcake quantity updated";
+		}
+		else
+			return null;
+	}
 
 	@Override
 	public CupcakeCategory addCupcakeCategory(CupcakeCategory cupcakeCategory) {
@@ -278,18 +290,18 @@ public class SweetCherryServiceImpl implements SweetCherryService {
 	}
 
 	@Override
-	public Optional<CupcakeDetails> updateCupcakePriceByCupcakeId(int cupcakeId, double price){	
+	public String updateCupcakePriceByCupcakeId(int cupcakeId, double price){	
 		if(cupcakedetails_rep.existsById(cupcakeId)) {
 			 cupcakedetails_rep.updatePrice(cupcakeId, price);
-		return cupcakedetails_rep.findById(cupcakeId);
+		return "Cupcake price updated";
 		}
 		return null;
 	}
 	@Override
-	public Optional<CupcakeDetails> modifyCupcakeName(int cupcakeId, String cupcakeName){
+	public String modifyCupcakeName(int cupcakeId, String cupcakeName){
 		if(cupcakedetails_rep.existsById(cupcakeId)) {
 		  cupcakedetails_rep.updateCupcakeName(cupcakeId, cupcakeName);
-		return cupcakedetails_rep.findById(cupcakeId);
+		return "Cupcake name updated";
 		}
 		else
 			return null;
