@@ -30,5 +30,10 @@ public interface CupcakeDetailsRepository extends JpaRepository<CupcakeDetails, 
 	@Modifying
 	@Transactional
 	public void updateCupcakeName(int cupcakeId,String cupcakeName);
+	
+	@Query("UPDATE CupcakeDetails c SET c.quantity = ?2 +c.quantity where c.cupcakeId = ?1")
+	@Modifying
+	@Transactional
+	public void updateCupcakeQuantityById(int cupcakeId,int quantity);
 
 }
