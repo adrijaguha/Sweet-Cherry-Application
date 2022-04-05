@@ -9,6 +9,7 @@ import com.capgemini.sweetcherry.dto.OrdersDto;
 import com.capgemini.sweetcherry.dto.PaymentDisplayDto;
 import com.capgemini.sweetcherry.dto.PaymentDto;
 import com.capgemini.sweetcherry.dto.UserDetailsDto;
+import com.capgemini.sweetcherry.dto.UserDisplayDto;
 import com.capgemini.sweetcherry.exceptions.InvalidIdException;
 import com.capgemini.sweetcherry.exceptions.NoAddressExistsException;
 import com.capgemini.sweetcherry.exceptions.NoPaymentExistsException;
@@ -38,7 +39,7 @@ public interface SweetCherryService {
 		
 		
 	//Administrator services
-	public List<UserDetails> allDetailsOfAdminAndUser() throws NoSuchUserExistsException; 
+	public List<UserDisplayDto> allDetailsOfAdminAndUser() throws NoSuchUserExistsException; 
 		
 
 	//Customer Services

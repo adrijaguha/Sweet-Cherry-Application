@@ -1,39 +1,16 @@
 package com.capgemini.sweetcherry.controller;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
-import com.capgemini.sweetcherry.dto.AddressDto;
-import com.capgemini.sweetcherry.dto.OrdersDisplayDto;
-import com.capgemini.sweetcherry.dto.PaymentDisplayDto;
-import com.capgemini.sweetcherry.dto.UserDetailsDto;
-import com.capgemini.sweetcherry.exceptions.NoAddressExistsException;
-import com.capgemini.sweetcherry.exceptions.NoPaymentExistsException;
-import com.capgemini.sweetcherry.exceptions.NoSuchAddressExistsException;
-import com.capgemini.sweetcherry.exceptions.NoSuchCupcakeCategoryExistsException;
-import com.capgemini.sweetcherry.exceptions.NoSuchCupcakeExistsException;
-import com.capgemini.sweetcherry.exceptions.NoSuchOrderExistsException;
+import com.capgemini.sweetcherry.dto.UserDisplayDto;
 import com.capgemini.sweetcherry.exceptions.NoSuchUserExistsException;
-import com.capgemini.sweetcherry.exceptions.PaymentFailedException;
-import com.capgemini.sweetcherry.model.Address;
-import com.capgemini.sweetcherry.model.CupcakeCategory;
-import com.capgemini.sweetcherry.model.CupcakeDetails;
-import com.capgemini.sweetcherry.model.Payment;
-import com.capgemini.sweetcherry.model.UserDetails;
 import com.capgemini.sweetcherry.service.SweetCherryService;
 
 @Controller
@@ -42,23 +19,12 @@ public class AdminController {
 	
 	@Autowired
 	SweetCherryService service;
-	
-	@GetMapping("/getAllUsers")
-	public ResponseEntity<List<UserDetailsDto>> allDetailsOfAdminAndUser(){
-		List<UserDetails> allDetails = service.allDetailsOfAdminAndUser();
-		if(allDetails.isEmpty())
+		
+	@GetMapping
+	public ResponseEntity<List<UserDisplayDto>> allDetailsOfAdminAndUser() {
+		List<UserDisplayDto> user=service.allDetailsOfAdminAndUser();
+		if(user.isEmpty())
 			throw new NoSuchUserExistsException();
-		List<UserDetailsDto> userList = new ArrayList<UserDetailsDto>();
-		UserDetailsDto user = null;
-		for(UserDetails u : allDetails) {
-			user = new UserDetailsDto();
-			user.setUserId(u.getUserId());
-			user.setEmail(u.getEmail());
-			user.setFirstName(u.getFirstName());
-			user.setLastName(u.getLastName());
-			user.setPassword(u.getPassword());
-			userList.add(user);
-		}
-		return new ResponseEntity<List<UserDetailsDto>>(userList,HttpStatus.OK);
+		return new ResponseEntity<List<UserDisplayDto>>(user,HttpStatus.OK);
 	}
 }

@@ -20,6 +20,7 @@ import com.capgemini.sweetcherry.dto.OrdersDto;
 import com.capgemini.sweetcherry.dto.PaymentDisplayDto;
 import com.capgemini.sweetcherry.dto.PaymentDto;
 import com.capgemini.sweetcherry.dto.UserDetailsDto;
+import com.capgemini.sweetcherry.dto.UserDisplayDto;
 import com.capgemini.sweetcherry.model.Address;
 import com.capgemini.sweetcherry.model.CupcakeCategory;
 import com.capgemini.sweetcherry.model.CupcakeDetails;
@@ -109,8 +110,21 @@ public class SweetCherryServiceImpl implements SweetCherryService {
 	}
 
 	@Override
-	public List<UserDetails> allDetailsOfAdminAndUser(){
-		return user_rep.findAll();
+	public List<UserDisplayDto> allDetailsOfAdminAndUser(){
+		
+		List<UserDetails> userdetails = user_rep.findAll();
+		List<UserDisplayDto> user = new ArrayList<UserDisplayDto>();
+		UserDisplayDto usr = null;
+		for(UserDetails us : userdetails) {
+			usr = new UserDisplayDto();
+			usr.setUserId(us.getUserId());
+			usr.setFirstName(us.getFirstName());
+			usr.setLastName(us.getLastName());
+			usr.setEmail(us.getEmail());
+			usr.setRoleName(us.getRole().getRoleName());
+			user.add(usr);
+		}
+		return user;
 	}
 
 	@Override
@@ -273,11 +287,12 @@ public class SweetCherryServiceImpl implements SweetCherryService {
 	}
 	
 	@Override
-	public String updateCupcakeQuantityById(int cupcakeId,int quantity)
-	{
+	public String updateCupcakeQuantityById(int cupcakeId,int quantity) {
 		
 		if(cupcakedetails_rep.existsById(cupcakeId)) {
-		 cupcakedetails_rep.updateCupcakeQuantityById(cupcakeId, quantity);
+		 Optional<CupcakeDetails> cupcake = cupcakedetails_rep.findById(cupcakeId);
+		 cupcake.get().setQuantity(cupcake.get().getQuantity()+quantity);
+		 cupcakedetails_rep.save(cupcake.get());
 				return "Cupcake quantity updated";
 		}
 		else
@@ -297,6 +312,7 @@ public class SweetCherryServiceImpl implements SweetCherryService {
 		}
 		return null;
 	}
+	
 	@Override
 	public String modifyCupcakeName(int cupcakeId, String cupcakeName){
 		if(cupcakedetails_rep.existsById(cupcakeId)) {
